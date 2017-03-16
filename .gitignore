@@ -52,3 +52,7 @@
 
 # IDE Project files
 /.idea
+
+# files
+/.config.php
+/admin/config.php

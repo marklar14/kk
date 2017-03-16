@@ -95,6 +95,11 @@
               <thead>
                 <tr>
                   <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                      <td class="text-left"><?php if ($sort == 's.store_id') { ?>
+                    <a href="<?php echo $sort_store; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_store; ?></a>
+                    <?php } else { ?>
+                    <a href="<?php echo $sort_store; ?>"><?php echo $column_store; ?></a>
+                    <?php } ?></td>
                   <td class="text-center"><?php echo $column_image; ?></td>
                   <td class="text-left"><?php if ($sort == 'pd.name') { ?>
                     <a href="<?php echo $sort_name; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_name; ?></a>
@@ -133,6 +138,7 @@
                     <?php } else { ?>
                     <input type="checkbox" name="selected[]" value="<?php echo $product['product_id']; ?>" />
                     <?php } ?></td>
+                           <td class="text-left"><?php echo $product['store']['name']; ?></td>
                   <td class="text-center"><?php if ($product['image']) { ?>
                     <img src="<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>" class="img-thumbnail" />
                     <?php } else { ?>

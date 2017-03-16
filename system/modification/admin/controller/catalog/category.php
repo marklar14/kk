@@ -202,15 +202,13 @@ class ControllerCatalogCategory extends Controller {
 
 		$category_total = $this->model_catalog_category->getTotalCategories();
 
-
 		$results = $this->model_catalog_category->getCategories($filter_data);
 
 		foreach ($results as $result) {
 			$data['categories'][] = array(
 				'category_id' => $result['category_id'],
 				'name'        => $result['name'],
-				'store'       => $this->model_catalog_category->getCategoryStore($result['category_id']),   
- 				'sort_order'  => $result['sort_order'],
+				'sort_order'  => $result['sort_order'],
 				'edit'        => $this->url->link('catalog/category/edit', 'token=' . $this->session->data['token'] . '&category_id=' . $result['category_id'] . $url, true),
 				'delete'      => $this->url->link('catalog/category/delete', 'token=' . $this->session->data['token'] . '&category_id=' . $result['category_id'] . $url, true)
 			);
@@ -223,7 +221,6 @@ class ControllerCatalogCategory extends Controller {
 		$data['text_confirm'] = $this->language->get('text_confirm');
 
 		$data['column_name'] = $this->language->get('column_name');
-		$data['column_store'] = "Obchod";
 		$data['column_sort_order'] = $this->language->get('column_sort_order');
 		$data['column_action'] = $this->language->get('column_action');
 
@@ -265,7 +262,6 @@ class ControllerCatalogCategory extends Controller {
 		}
 
 		$data['sort_name'] = $this->url->link('catalog/category', 'token=' . $this->session->data['token'] . '&sort=name' . $url, true);
-		$data['sort_store'] = $this->url->link('catalog/category', 'token=' . $this->session->data['token'] . '&sort=store' . $url, true);
 		$data['sort_sort_order'] = $this->url->link('catalog/category', 'token=' . $this->session->data['token'] . '&sort=sort_order' . $url, true);
 
 		$url = '';
@@ -586,7 +582,7 @@ class ControllerCatalogCategory extends Controller {
 			if ($url_alias_info && !isset($this->request->get['category_id'])) {
 				$this->error['keyword'] = sprintf($this->language->get('error_keyword'));
 			}
-		}
+		} 
 		
 		if ($this->error && !isset($this->error['warning'])) {
 			$this->error['warning'] = $this->language->get('error_warning');

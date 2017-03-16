@@ -203,8 +203,17 @@ class ModelCatalogCategory extends Model {
 	}
 
 	public function getCategories($data = array()) {
-		$sql = "SELECT cp.category_id AS category_id, GROUP_CONCAT(cd1.name ORDER BY cp.level SEPARATOR '&nbsp;&nbsp;&gt;&nbsp;&nbsp;') AS name, c1.parent_id, c1.sort_order FROM " . DB_PREFIX . "category_path cp LEFT JOIN " . DB_PREFIX . "category c1 ON (cp.category_id = c1.category_id) LEFT JOIN " . DB_PREFIX . "category c2 ON (cp.path_id = c2.category_id) LEFT JOIN " . DB_PREFIX . "category_description cd1 ON (cp.path_id = cd1.category_id) LEFT JOIN " . DB_PREFIX . "category_description cd2 ON (cp.category_id = cd2.category_id) WHERE cd1.language_id = '" . (int)$this->config->get('config_language_id') . "' AND cd2.language_id = '" . (int)$this->config->get('config_language_id') . "'";
 
+		if($data['sort'] == 'store')
+		{
+			$sql = "SELECT cp.category_id AS category_id, s.store_id as store, GROUP_CONCAT(cd1.name ORDER BY cp.level SEPARATOR '&nbsp;&nbsp;&gt;&nbsp;&nbsp;') AS name, c1.parent_id, c1.sort_order FROM " . DB_PREFIX . "category_path cp LEFT JOIN " . DB_PREFIX . "category c1 ON (cp.category_id = c1.category_id) LEFT JOIN " . DB_PREFIX . "category c2 ON (cp.path_id = c2.category_id) LEFT JOIN " . DB_PREFIX . "category_description cd1 ON (cp.path_id = cd1.category_id) LEFT JOIN " . DB_PREFIX . "category_description cd2 ON (cp.category_id = cd2.category_id) LEFT JOIN " . DB_PREFIX . "category_to_store s ON (s.category_id = c1.category_id) ";
+		}
+		else
+		{
+			$sql = "SELECT cp.category_id AS category_id, GROUP_CONCAT(cd1.name ORDER BY cp.level SEPARATOR '&nbsp;&nbsp;&gt;&nbsp;&nbsp;') AS name, c1.parent_id, c1.sort_order FROM " . DB_PREFIX . "category_path cp LEFT JOIN " . DB_PREFIX . "category c1 ON (cp.category_id = c1.category_id) LEFT JOIN " . DB_PREFIX . "category c2 ON (cp.path_id = c2.category_id) LEFT JOIN " . DB_PREFIX . "category_description cd1 ON (cp.path_id = cd1.category_id) LEFT JOIN " . DB_PREFIX . "category_description cd2 ON (cp.category_id = cd2.category_id)";
+		}
+
+		$sql.= "WHERE cd1.language_id = '" . (int)$this->config->get('config_language_id') . "' AND cd2.language_id = '" . (int)$this->config->get('config_language_id') . "'";	
 		if (!empty($data['filter_name'])) {
 			$sql .= " AND cd2.name LIKE '%" . $this->db->escape($data['filter_name']) . "%'";
 		}
@@ -213,6 +222,7 @@ class ModelCatalogCategory extends Model {
 
 		$sort_data = array(
 			'name',
+			'store',
 			'sort_order'
 		);
 
@@ -288,6 +298,20 @@ class ModelCatalogCategory extends Model {
 
 		foreach ($query->rows as $result) {
 			$category_store_data[] = $result['store_id'];
+		}
+
+		return $category_store_data;
+	}
+
+		public function getCategoryStore($category_id) {
+		$category_store_data = array();
+
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "category_to_store c left join " . DB_PREFIX . "store s on c.store_id = s.store_id WHERE c.category_id = '" . (int)$category_id . "' Limit 1");
+
+		foreach ($query->rows as $result) {
+			$category_store_data["store_id"] = $result['store_id'];
+			$category_store_data["name"] = $result['name'];
+
 		}
 
 		return $category_store_data;

@@ -341,7 +341,15 @@ class ModelCatalogProduct extends Model {
 	}
 
 	public function getProducts($data = array()) {
-		$sql = "SELECT * FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+		if($data['sort'] == "s.store_id")
+		{
+			$sql = "SELECT * FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store s ON (s.product_id = p.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+		}
+		else
+		{
+			$sql = "SELECT * FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+		}
+
 
 		if (!empty($data['filter_name'])) {
 			$sql .= " AND pd.name LIKE '" . $this->db->escape($data['filter_name']) . "%'";
@@ -375,6 +383,7 @@ class ModelCatalogProduct extends Model {
 
 		$sort_data = array(
 			'pd.name',
+			's.store_id',
 			'p.model',
 			'p.price',
 			'p.quantity',
@@ -577,6 +586,19 @@ class ModelCatalogProduct extends Model {
 
 		foreach ($query->rows as $result) {
 			$product_store_data[] = $result['store_id'];
+		}
+
+		return $product_store_data;
+	}
+
+		public function getProductStore($product_id) {
+		$product_store_data = array();
+
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_store p left join " . DB_PREFIX . "store s ON (s.store_id = p.store_id)  WHERE product_id = '" . (int)$product_id . "' Limit 1");
+
+		foreach ($query->rows as $result) {
+			$product_store_data["store_id"] = $result['store_id'];
+			$product_store_data["name"] = $result['name'];
 		}
 
 		return $product_store_data;

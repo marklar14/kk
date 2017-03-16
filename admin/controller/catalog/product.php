@@ -375,6 +375,7 @@ class ControllerCatalogProduct extends Controller {
 
 			$data['products'][] = array(
 				'product_id' => $result['product_id'],
+				'store'      => $this->model_catalog_product->getProductStore($result['product_id']), 
 				'image'      => $image,
 				'name'       => $result['name'],
 				'model'      => $result['model'],
@@ -395,6 +396,7 @@ class ControllerCatalogProduct extends Controller {
 		$data['text_confirm'] = $this->language->get('text_confirm');
 
 		$data['column_image'] = $this->language->get('column_image');
+		$data['column_store'] = "Obchody";
 		$data['column_name'] = $this->language->get('column_name');
 		$data['column_model'] = $this->language->get('column_model');
 		$data['column_price'] = $this->language->get('column_price');
@@ -474,6 +476,7 @@ class ControllerCatalogProduct extends Controller {
 		}
 
 		$data['sort_name'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=pd.name' . $url, true);
+		$data['sort_store'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=s.store_id' . $url, true);
 		$data['sort_model'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=p.model' . $url, true);
 		$data['sort_price'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=p.price' . $url, true);
 		$data['sort_quantity'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=p.quantity' . $url, true);
